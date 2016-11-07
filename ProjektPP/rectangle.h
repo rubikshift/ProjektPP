@@ -5,6 +5,6 @@ class rectangle : public shape
 {
 	public:
 		void draw(int** img);
-		void setStart(point* p);
-		void setEnd(point* p);
+		void setStart(const point* p);
+		void setEnd(const point* p);
 };
