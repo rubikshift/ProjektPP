@@ -135,9 +135,9 @@ int main(int argc, char** argv) {
 		{
 			zero = 1;
 			zn = getch();
-			if(zn == ARROW_UP && y > MIN_Y_POSITON) y--;
+			if(zn == ARROW_UP && y > MIN_Y_POSITION) y--;
 			else if(zn == ARROW_DOWN && y < MAX_Y_POSITION) y++;
-			else if(zn == ARROW_LEFT && x > MIN_X_POSITON) x--;
+			else if(zn == ARROW_LEFT && x > MIN_X_POSITION) x--;
 			else if(zn == ARROW_RIGHT && x < MAX_X_POSITION) x++;
 		}
 		else if (znChangesTextColor(&zn)) attr = changeTextColor(&zn, &attr);

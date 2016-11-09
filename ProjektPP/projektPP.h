@@ -17,9 +17,9 @@
 #define DRAW_LINE_INFO 5
 #define CHOSE_TEXT_COLOR_INFO 6
 
-#define MIN_X_POSITON 1
+#define MIN_X_POSITION 1
 #define MAX_X_POSITION 120
-#define MIN_Y_POSITON 6
+#define MIN_Y_POSITION 6
 #define MAX_Y_POSITION 30
 
 namespace UI

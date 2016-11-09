@@ -5,3 +5,9 @@ bool point::operator ==(point p)
 		return true;
 	else return false;
 }
+
+point point::operator =(point p)
+{
+	this->x = p.x;
+	this->y = p.y;
+}

@@ -1,8 +1,10 @@
 #include "cursor.h"
 #include "conio2.h"
+#include "projektPP.h"
 
 void cursor::goToPoint(const point* p)
 {
+	this->position = *p;
 	gotoxy(p->x, p->y);
 }
 
@@ -13,24 +15,24 @@ void cursor::setColor(int color)
 
 void cursor::moveUp()
 {
-	if (this->y > MIN_Y_POSITION)
-		this->y--;
+	if (this->position.y > MIN_Y_POSITION)
+		this->position.y--;
 }
 
 void cursor::moveDown()
 {
-	if (this->y < MAX_Y_POSITON)
-		this->y++;
+	if (this->position.y < MAX_Y_POSITION)
+		this->position.y++;
 }
 
 void cursor::moveLeft()
 {
-	if (this->x > MIN_X_POSITION)
-		this->x--;
+	if (this->position.x > MIN_X_POSITION)
+		this->position.x--;
 }
 
 void cursor::moveRight()
 {
-	if (this->x < MAX_X_POSITION)
-		this->x++;
+	if (this->position.x < MAX_X_POSITION)
+		this->position.x++;
 }
