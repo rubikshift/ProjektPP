@@ -8,9 +8,12 @@ class cursor
 		int actualColor;
 
 		void goToPoint(const point* p);
-		void setColor(int color);
+		void setColor(const int* color);
 		void moveUp();
 		void moveDown();
 		void moveLeft();
 		void moveRight();
+		
+		point* getPositionPointer();
+		int* getColorPointer();
 };

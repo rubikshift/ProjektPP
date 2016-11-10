@@ -36,3 +36,13 @@ void cursor::moveRight()
 	if (this->position.x < MAX_X_POSITION)
 		this->position.x++;
 }
+
+point* cursor::getPositionPointer()
+{
+	return &(this->position);
+}
+
+int* cursor::getColorPointer()
+{
+	return &(this->color);
+}

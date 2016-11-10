@@ -13,65 +13,65 @@
    wartosci numeryczne umieszczajac w ich miejsce 
    dobrze dobrane identyfikatory */
 
-int changeTextColor(const int* zn, const int* acctualTextColor)
+int changeColor(const int* input, const int* acctualTextColor)
 {
-	switch (*zn)
+	switch (*input)
 	{
-	case '0': return BLACK;
-	case '1': return BLUE;
-	case '2': return GREEN;
-	case '3': return CYAN;
-	case '4': return RED;
-	case '5': return MAGENTA;
-	case '6': return BROWN;
-	case '7': return LIGHTGRAY;
-	case '8': return DARKGRAY;
-	case '9': return LIGHTBLUE;
-	case 'q':
-	case 'Q': return LIGHTGREEN;
-	case 'w':
-	case 'W': return LIGHTCYAN;
-	case 'e':
-	case 'E': return LIGHTRED;
-	case 'r':
-	case 'R': return LIGHTMAGENTA;
-	case 't': 
-	case 'T': return YELLOW;
-	case 'y':
-	case 'Y': return WHITE;
-	case ' ':
-	default: return *acctualTextColor;
+		case '0': return BLACK;
+		case '1': return BLUE;
+		case '2': return GREEN;
+		case '3': return CYAN;
+		case '4': return RED;
+		case '5': return MAGENTA;
+		case '6': return BROWN;
+		case '7': return LIGHTGRAY;
+		case '8': return DARKGRAY;
+		case '9': return LIGHTBLUE;
+		case 'q':
+		case 'Q': return LIGHTGREEN;
+		case 'w':
+		case 'W': return LIGHTCYAN;
+		case 'e':
+		case 'E': return LIGHTRED;
+		case 'r':
+		case 'R': return LIGHTMAGENTA;
+		case 't': 
+		case 'T': return YELLOW;
+		case 'y':
+		case 'Y': return WHITE;
+		case ' ':
+		default: return *acctualTextColor;
 	}
 }
 
-bool znChangesTextColor(const int* zn)
+bool inputChangesTextColor(const int* input)
 {
-	switch (*zn)
+	switch (*input)
 	{
-	case '0':
-	case '1':
-	case '2':
-	case '3':
-	case '4':
-	case '5':
-	case '6':
-	case '7':
-	case '8':
-	case '9':
-	case 'q':
-	case 'Q':
-	case 'w':
-	case 'W':
-	case 'e':
-	case 'E':
-	case 'r':
-	case 'R':
-	case 't':
-	case 'T':
-	case 'y':
-	case 'Y': 
-	case ' ': return true;
-	default: return false;
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+		case 'q':
+		case 'Q':
+		case 'w':
+		case 'W':
+		case 'e':
+		case 'E':
+		case 'r':
+		case 'R':
+		case 't':
+		case 'T':
+		case 'y':
+		case 'Y': 
+		case ' ': return true;
+		default: return false;
 	}
 }
 

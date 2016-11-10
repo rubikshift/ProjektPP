@@ -8,22 +8,28 @@ class file
 	private:
 		char* name;
 		int** buff;
-		shape* stack;
+		shape** stack;
 		int stackCounter;
+		int stackSizeMultipler;
 		bool interactiveMode;
 
-		void toggleInteractiveMode();
 	public:
 		cursor localCursor;
-
-		void createNewFile(int width, int height);
+		
+		file(const char* name, int width, int height);
+		~file();
+		
 		void loadFile(const char* fileName);
 		void saveFile(const char* fileName);
 
 		void undoLastAction();
-		void addLine(const point* start);
-		void addRectangle(const point* start);
+		void addLine();
+		void addRectangle();
+		void cancelDrawing();
+		void finishDrawing();
 		bool isInteractiveModeEnabled();
+		
+		void resizeStack();
 
 		void updateView();
 		void updateBuff();
