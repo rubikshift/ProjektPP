@@ -8,9 +8,9 @@ class shape
 		point end;
 		int color;
 	public:
-		virtual void draw() = 0;
-		virtual void draw(int** img) = 0;
-		virtual void setStart(const point* p) = 0;
-		virtual void setEnd(const point* p) = 0;
-		virtual void serColor(const int* color) = 0;
+		virtual void draw(short int** img = 0) = 0;
+
+		void setStart(const point* p);
+		void setEnd(const point* p);
+		void setColor(const int* color);
 };

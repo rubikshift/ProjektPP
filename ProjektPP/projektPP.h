@@ -7,6 +7,7 @@
 #define ARROW_LEFT 0x4b
 #define ARROW_RIGHT 0x4d
 #define ENTER 0x0d
+#define BACKSPACE 0x08;
 
 /*STALE INTERFEJSU*/
 #define WINDOW_TITLE 0
@@ -17,14 +18,22 @@
 #define DRAW_LINE_INFO 5
 #define CHOSE_TEXT_COLOR_INFO 6
 
+/*STALE KURSORA*/
 #define MIN_X_POSITION 1
 #define MAX_X_POSITION 120
 #define MIN_Y_POSITION 6
 #define MAX_Y_POSITION 30
 
-namespace UI
-{
-	char* text[] = { "Michal Krakowiak 165596", "esc = wyjscie", "strzalki = poruszanie", "spacja = zmiana koloru", "enter = zmiana koloru tla",
-				"l = rysowanie linii", "0123456789qwerty = wybor koloru" };
-	int shift = strlen(text[CHANGE_BACKGROUND_COLOR_INFO]) + 1;
-}
+/*STALA STOSTU*/
+#define DEFAULT_STACK_SIZE 100
+
+/*STALE BMP*/
+#define BMP_HEADER 54
+#define BMP_WIDTH_INFO 18
+#define BMP_HEIGHT_INFO 22
+#define COLORS_PER_PIXEL 3
+#define BMP_R_POSITION 2
+#define BMP_G_POSITION 1
+#define BMP_B_POSITION 0
+
+#define NUMBER_OF_COLORS 16

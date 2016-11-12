@@ -2,27 +2,39 @@
 #include "point.h"
 #include "cursor.h"
 #include "shape.h"
+#include "line.h"
+#include "rectangle.h"
+#include "extensions.h"
+#include "updateModes.h"
 
 class file
 {
 	private:
 		char* name;
-		int** buff;
+		int width;
+		int height;
+		short int** img;
 		shape** stack;
 		int stackCounter;
 		int stackSizeMultipler;
 		bool interactiveMode;
 
+		extension getFileExtension(const char* fileName);
+		void loadBmpFile(const char* fileName);
+		void loadXpmFile(const char* fileName);
+		void loadMffFile(const char* fileName);
+
+		void init(const char* name, int width, int height);
 	public:
-		cursor localCursor;
+		cursor* localCursor;
 		
 		file(const char* name, int width, int height);
 		~file();
 		
 		void loadFile(const char* fileName);
-		void saveFile(const char* fileName);
+		void saveFile(const char* fileName, extension fileExtension);
 
-		void undoLastAction();
+		void undoLastAction(updateMode mode = all);
 		void addLine();
 		void addRectangle();
 		void cancelDrawing();
@@ -32,5 +44,5 @@ class file
 		void resizeStack();
 
 		void updateView();
-		void updateBuff();
+		void updateImg(updateMode mode = last);
 };

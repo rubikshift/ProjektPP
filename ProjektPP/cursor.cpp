@@ -2,15 +2,21 @@
 #include "conio2.h"
 #include "projektPP.h"
 
+cursor::cursor()
+{
+	this->position = { MIN_X_POSITION, MIN_Y_POSITION };
+	this->actualColor = LIGHTGRAY;
+}
+
 void cursor::goToPoint(const point* p)
 {
 	this->position = *p;
 	gotoxy(p->x, p->y);
 }
 
-void cursor::setColor(int color)
+void cursor::setColor(const int* color)
 {
-	this->actualColor = color;
+	this->actualColor = *color;
 }
 
 void cursor::moveUp()
@@ -44,5 +50,5 @@ point* cursor::getPositionPointer()
 
 int* cursor::getColorPointer()
 {
-	return &(this->color);
+	return &(this->actualColor);
 }

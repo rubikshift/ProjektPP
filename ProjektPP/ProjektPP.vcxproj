@@ -144,20 +144,27 @@
   <ItemGroup>
     <ClCompile Include="conio2.cpp" />
     <ClCompile Include="cursor.cpp" />
+    <ClCompile Include="file.cpp" />
     <ClCompile Include="line.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="math.cpp" />
     <ClCompile Include="point.cpp" />
     <ClCompile Include="ractangle.cpp" />
+    <ClCompile Include="shape.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="conio2.h" />
+    <ClInclude Include="extensions.h" />
     <ClInclude Include="file.h" />
     <ClInclude Include="cursor.h" />
     <ClInclude Include="line.h" />
+    <ClInclude Include="math.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="projektPP.h" />
     <ClInclude Include="rectangle.h" />
+    <ClInclude Include="rgb.h" />
     <ClInclude Include="shape.h" />
+    <ClInclude Include="updateModes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

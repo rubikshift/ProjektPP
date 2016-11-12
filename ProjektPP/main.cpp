@@ -1,19 +1,18 @@
 #include <stdlib.h>
-#include<string.h>
-
-#include "conio2.h"
+#include <string.h>
 #include "projektPP.h"
-#include "point.h"
-#include "shape.h"
-#include "line.h"
-#include "rectangle.h"
+#include "conio2.h"
+#include "file.h"
 
-/* Uwaga: w docelowym programie nalezy zadeklarowac odpowiednie
-   stale, na przyklad po to, aby wyeliminowac z programu
-   wartosci numeryczne umieszczajac w ich miejsce 
-   dobrze dobrane identyfikatory */
+namespace UI
+{
+	char* text[] = { "Michal Krakowiak 165596", "esc = wyjscie", "strzalki = poruszanie", "spacja = zmiana koloru", "enter = zmiana koloru tla",
+		"l = rysowanie linii", "0123456789qwerty = wybor koloru" };
+	int shift = strlen(text[CHANGE_BACKGROUND_COLOR_INFO]) + 1;
+}
 
-int changeColor(const int* input, const int* acctualTextColor)
+
+int changeColor(const int* input, const int* acctualColor)
 {
 	switch (*input)
 	{
@@ -40,39 +39,16 @@ int changeColor(const int* input, const int* acctualTextColor)
 		case 'y':
 		case 'Y': return WHITE;
 		case ' ':
-		default: return *acctualTextColor;
+		default: return *acctualColor;
 	}
 }
 
-bool inputChangesTextColor(const int* input)
+bool inputChangesTextColor(const int* input, const int* acctualColor)
 {
-	switch (*input)
-	{
-		case '0':
-		case '1':
-		case '2':
-		case '3':
-		case '4':
-		case '5':
-		case '6':
-		case '7':
-		case '8':
-		case '9':
-		case 'q':
-		case 'Q':
-		case 'w':
-		case 'W':
-		case 'e':
-		case 'E':
-		case 'r':
-		case 'R':
-		case 't':
-		case 'T':
-		case 'y':
-		case 'Y': 
-		case ' ': return true;
-		default: return false;
-	}
+	if (changeColor(input, acctualColor) != *acctualColor)
+		return true;
+	else
+		return false;
 }
 
 void drawUI(const int* zn, const int* zero, const int* x, const int* y)
@@ -120,6 +96,8 @@ int main(int argc, char** argv) {
 	// je¿eli program jest kompilowany w czystym jêzyku C
 	// proszê odkomentowaæ poni¿sz¹ liniê
 	// Conio2_Init();
+
+	file* f = new file("test", 50, 20);
 	settitle(UI::text[WINDOW_TITLE]);
 
 	do 
@@ -140,7 +118,7 @@ int main(int argc, char** argv) {
 			else if(zn == ARROW_LEFT && x > MIN_X_POSITION) x--;
 			else if(zn == ARROW_RIGHT && x < MAX_X_POSITION) x++;
 		}
-		else if (znChangesTextColor(&zn)) attr = changeTextColor(&zn, &attr);
+		else if (inputChangesTextColor(&zn, &attr)) attr = changeColor(&zn, &attr);
 		else if(zn == ENTER) back = (back + 1) % 16;
 	} while (zn != ESC);
 

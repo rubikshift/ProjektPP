@@ -7,6 +7,8 @@ class cursor
 		point position;
 		int actualColor;
 
+		cursor();
+
 		void goToPoint(const point* p);
 		void setColor(const int* color);
 		void moveUp();
