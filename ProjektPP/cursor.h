@@ -5,12 +5,15 @@ class cursor
 {
 	public:
 		point position;
+		char cursorCharacter;
 		int actualColor;
 
-		cursor();
+		int maxXPosition;
+		int maxYPosition;
 
-		void goToPoint(const point* p);
-		void setColor(const int* color);
+		cursor(int maxXPosition, int maxYPositon);
+
+		void setColor(int color);
 		void moveUp();
 		void moveDown();
 		void moveLeft();

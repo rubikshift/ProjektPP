@@ -5,7 +5,6 @@
 #include "line.h"
 #include "rectangle.h"
 #include "extensions.h"
-#include "updateModes.h"
 
 class file
 {
@@ -13,28 +12,35 @@ class file
 		char* name;
 		int width;
 		int height;
-		short int** img;
+		int** img;
+		int** buff;
 		shape** stack;
 		int stackCounter;
 		int stackSizeMultipler;
 		bool interactiveMode;
 
 		extension getFileExtension(const char* fileName);
+		
 		void loadBmpFile(const char* fileName);
 		void loadXpmFile(const char* fileName);
 		void loadMffFile(const char* fileName);
+
+		void saveBmpFile(const char* fileName);
+		void saveXpmFile(const char* fileName);
+		void saveMffFile(const char* fileName);
 
 		void init(const char* name, int width, int height);
 	public:
 		cursor* localCursor;
 		
+		file(const char* fileName);
 		file(const char* name, int width, int height);
 		~file();
 		
 		void loadFile(const char* fileName);
-		void saveFile(const char* fileName, extension fileExtension);
+		void saveFile(const char* fileName = NULL);
 
-		void undoLastAction(updateMode mode = all);
+		void undoLastAction();
 		void addLine();
 		void addRectangle();
 		void cancelDrawing();
@@ -44,5 +50,5 @@ class file
 		void resizeStack();
 
 		void updateView();
-		void updateImg(updateMode mode = last);
+		void updateImg();
 };

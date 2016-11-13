@@ -6,10 +6,10 @@ struct rgb
 	unsigned char r, g, b;
 };
 
-const rgb colors[] = {
+const rgb rgbColors[] = {
 	{0, 0 ,0},			//BLACK
 	{0, 0, 170},		//BLUE
-	{0, 170, 0},		//GREAN
+	{0, 170, 0},		//GREEN
 	{0, 170, 170},		//CYAN
 	{170, 0, 0},		//RED
 	{170, 0 , 170},		//MAGENTA
@@ -17,7 +17,7 @@ const rgb colors[] = {
 	{170, 170, 170},	//LIGHTGRAY
 	{85, 85, 85},		//DARKGRAY
 	{85, 85, 255},		//LIGHTBLUE
-	{85, 255, 85},		//LIGHTGREAN
+	{85, 255, 85},		//LIGHTGREEN
 	{85, 255, 255},		//LIGHTCYAN
 	{255, 85, 85},		//LIGHTRED
 	{255, 85, 255},		//LIGHTMAGENTA

@@ -4,15 +4,13 @@
 class line : public shape
 {
 	private:
-		void drawStraightLine(short int** img = 0);
-		void drawStraightLineOY(short int** img = 0);
-		void drawStraightLineOX(short int** img = 0);
+		void drawStraightLine(int** img = NULL);
 
-		void drawDiagonalLine(short int** img = 0);
-		void drawDiagonalLineOX(short int** img = 0);
-		void drawDiagonalLineOY(short int** img = 0);
+		void drawDiagonalLine(int** img = NULL);
+		void drawDiagonalLineOX(int** img = NULL);
+		void drawDiagonalLineOY(int** img = NULL);
 	public:
 		line(const point* start, const int* color);
 		
-		void draw(short int** img = 0);		
+		void draw(int** img = 0);		
 };

@@ -1,5 +1,7 @@
 #include "line.h"
 #include "math.h"
+#include "conio2.h"
+#include "projektPP.h"
 
 line::line(const point* start, const int* color)
 {
@@ -7,7 +9,7 @@ line::line(const point* start, const int* color)
 	this->setColor(color);
 }
 
-void line::draw(short int** img)
+void line::draw(int** img)
 {
 	if (this->start == this->end || this->start.y == this->end.y || this->start.x == this->end.x)
 		this->drawStraightLine(img);
@@ -15,53 +17,26 @@ void line::draw(short int** img)
 		this->drawDiagonalLine(img);
 }
 
-void line::drawStraightLine(short int** img)
+void line::drawStraightLine(int** img)
 {
 	if (this->start == this->end)
-		img[this->start.y][this->start.x] = this->color;
+	{
+		if(img != 0)
+			img[this->start.y - MIN_Y_POSITION][this->start.x - MIN_X_POSITION] = this->color;
+		else
+		{
+			gotoxy(this->start.x, this->start.y );
+			textbackground(this->color);
+			putch(' ');
+		}
+	}
 	else if (this->start.y == this->end.y)
-		this->drawStraightLineOY(img);
+		this->drawStraightLineOX(this->start, this->end, img);
 	else if (this->start.x == this->end.x)
-		this->drawStraightLineOX(img);
+		this->drawStraightLineOY(this->start, this->end, img);
 }
 
-void line::drawStraightLineOX(short int** img)
-{
-	int startX, endX;
-	if (this->start.x < this->end.x)
-	{
-		startX = this->start.x;
-		endX = this->end.x;
-	}
-	else
-	{
-		startX = this->end.x;
-		endX = this->start.x;
-	}
-
-	for (int x = startX; x < endX; x++)
-		img[this->start.y][x] = color;
-}
-
-void line::drawStraightLineOY(short int** img)
-{
-	int startY, endY;
-	if (this->start.y < this->end.y)
-	{
-		startY = this->start.y;
-		endY = this->end.y;
-	}
-	else
-	{
-		startY = this->end.y;
-		endY = this->start.y;
-	}
-
-	for (int y = startY; y < endY; y++)
-		img[y][this->start.x] = color;
-}
-
-void line::drawDiagonalLine(short int** img)
+void line::drawDiagonalLine(int** img)
 {
 	if (absolute(this->start.y - this->end.y) > absolute(this->start.x - this->end.x))
 		this->drawDiagonalLineOY(img);
@@ -70,7 +45,7 @@ void line::drawDiagonalLine(short int** img)
 	
 }
 
-void line::drawDiagonalLineOY(short int** img)
+void line::drawDiagonalLineOY(int** img)
 {
 	int breakPoints, partialLength;
 	point endCopy = this->end, startCopy = this->start;
@@ -81,7 +56,7 @@ void line::drawDiagonalLineOY(short int** img)
 		if (i == breakPoints)
 		{
 			this->end = endCopy;
-			this->drawStraightLineOY(img);
+			this->drawStraightLineOY(this->start, this->end, img);
 		}
 		else
 		{
@@ -91,7 +66,7 @@ void line::drawDiagonalLineOY(short int** img)
 				this->end.y = this->start.y - partialLength;
 			this->end.x = this->start.x;
 
-			this->drawStraightLineOY(img);
+			this->drawStraightLineOY(this->start, this->end, img);
 
 			if (this->end.y > this->start.y)
 				this->start.y += (partialLength + 1);
@@ -105,7 +80,7 @@ void line::drawDiagonalLineOY(short int** img)
 	}
 }
 
-void line::drawDiagonalLineOX(short int** img)
+void line::drawDiagonalLineOX(int** img)
 {
 	int breakPoints, partialLength;
 	point endCopy = this->end, startCopy = this->start;
@@ -116,7 +91,7 @@ void line::drawDiagonalLineOX(short int** img)
 		if (i == breakPoints)
 		{
 			this->end = endCopy;
-			this->drawStraightLineOX(img);
+			this->drawStraightLineOX(this->start, this->end, img);
 		}
 		else
 		{
@@ -126,7 +101,7 @@ void line::drawDiagonalLineOX(short int** img)
 				this->end.x = this->start.x - partialLength;
 			this->end.x = this->start.x;
 
-			this->drawStraightLineOX(img);
+			this->drawStraightLineOX(this->start, this->end, img);
 
 			if (this->end.x > this->start.x)
 				this->start.x += (partialLength + 1);

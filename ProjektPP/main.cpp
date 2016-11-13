@@ -51,7 +51,7 @@ bool inputChangesTextColor(const int* input, const int* acctualColor)
 		return false;
 }
 
-void drawUI(const int* zn, const int* zero, const int* x, const int* y)
+void drawUI(const int* zn, const int* zero)
 {
 	char txt[32] = "kod klawisza: 0x";
 	textbackground(BLACK);
@@ -92,35 +92,45 @@ void drawUI(const int* zn, const int* zero, const int* x, const int* y)
 }
 
 int main(int argc, char** argv) {
-	int zn = 0, x = 40, y = 12, attr = 7, back = 0, zero = 0;
+	int input = 0, zero = 0;
+	bool toClose = false;
 	// je¿eli program jest kompilowany w czystym jêzyku C
 	// proszê odkomentowaæ poni¿sz¹ liniê
 	// Conio2_Init();
 
-	file* f = new file("test", 50, 20);
+	file* f;
+
+	if(argc == 1)
+		f = new file("test.xpm", 50, 20);	
+	if (argc == 2)
+		f->loadFile(argv[1]);
 	settitle(UI::text[WINDOW_TITLE]);
 
 	do 
 	{
-		drawUI(&zn, &zero, &x, &y);
-		gotoxy(x, y);
-		textcolor(attr);
-		textbackground(back);
-		putch('*');
+		drawUI(&input, &zero);
+		f->updateView();
 		zero = 0;
-		zn = getch();
-		if(zn == 0)
+		input = getch();
+		if(input == 0)
 		{
 			zero = 1;
-			zn = getch();
-			if(zn == ARROW_UP && y > MIN_Y_POSITION) y--;
-			else if(zn == ARROW_DOWN && y < MAX_Y_POSITION) y++;
-			else if(zn == ARROW_LEFT && x > MIN_X_POSITION) x--;
-			else if(zn == ARROW_RIGHT && x < MAX_X_POSITION) x++;
+			input = getch();
+			if (input == ARROW_UP) f->localCursor->moveUp();
+			else if (input == ARROW_DOWN) f->localCursor->moveDown();
+			else if (input == ARROW_LEFT) f->localCursor->moveLeft();
+			else if (input == ARROW_RIGHT) f->localCursor->moveRight();
 		}
-		else if (inputChangesTextColor(&zn, &attr)) attr = changeColor(&zn, &attr);
-		else if(zn == ENTER) back = (back + 1) % 16;
-	} while (zn != ESC);
+		else if (inputChangesTextColor(&input, f->localCursor->getColorPointer())) f->localCursor->setColor(changeColor(&input, f->localCursor->getColorPointer()));
+		else if ((input == 'l' || input == 'L') && f->isInteractiveModeEnabled() != true) f->addLine();
+		else if ((input == 'k' || input == 'K') && f->isInteractiveModeEnabled() != true) f->addRectangle();
+		else if ((input == 'k' || input == 'K' || input == 'l' || input == 'L') && f->isInteractiveModeEnabled() == true) f->finishDrawing();
+		else if (f->isInteractiveModeEnabled() == true && input == ESC) f->cancelDrawing();
+		else if (f->isInteractiveModeEnabled() != true && input == BACKSPACE) f->undoLastAction();
+		else if (f->isInteractiveModeEnabled() == false && input == ESC) toClose = true;
+		else if (f->isInteractiveModeEnabled() == false && input == 's') f->saveFile();
+	} while (!toClose);
 
+	delete f;
 	return 0;
-	}
+}
