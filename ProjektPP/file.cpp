@@ -105,7 +105,6 @@ void file::loadBmpFile(const char* fileName)
 void file::loadXpmFile(const char* fileName)
 {
 	onDiskFile* fileStream = fopen(fileName, "r");
-	onDiskFile* debug = fopen("debug.txt", "w");
 	char buff[BUFF];
 	xpm* colors;
 	if (fileStream != 0)
@@ -133,7 +132,6 @@ void file::loadXpmFile(const char* fileName)
 		for (int i = 0; i < values[XPM_HEIGHT]; i++)
 		{
 			fscanf(fileStream, "%s", data[i]);
-			fprintf(debug, "%s\n", data[i]);
 		}
 		fclose(fileStream);
 

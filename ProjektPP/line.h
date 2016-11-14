@@ -4,11 +4,11 @@
 class line : public shape
 {
 	private:
-		void drawStraightLine(int** img = NULL);
+		void drawStraightLine(int** img = 0);
 
-		void drawDiagonalLine(int** img = NULL);
-		void drawDiagonalLineOX(int** img = NULL);
-		void drawDiagonalLineOY(int** img = NULL);
+		void drawDiagonalLine(int** img = 0);
+		void drawDiagonalLineOX(int** img = 0);
+		void drawDiagonalLineOY(int** img = 0);
 	public:
 		line(const point* start, const int* color);
 		

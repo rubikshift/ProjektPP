@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
 	if(argc == 1)
 		f = new file("test.xpm", 50, 20);	
 	if (argc == 2)
-		f->loadFile(argv[1]);
+		f = new file(argv[1]);
 	settitle(UI::text[WINDOW_TITLE]);
 
 	do 
