@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "conio2.h"
 #include "file.h"
 #include "projektPP.h"
@@ -105,7 +106,7 @@ void file::loadBmpFile(const char* fileName)
 void file::loadXpmFile(const char* fileName)
 {
 	onDiskFile* fileStream = fopen(fileName, "r");
-	char buff[BUFF];
+	char buff[XPM_BUFF];
 	xpm* colors;
 	if (fileStream != 0)
 	{
@@ -148,7 +149,53 @@ void file::loadXpmFile(const char* fileName)
 
 void file::loadMffFile(const char* fileName)
 {
+	onDiskFile* fileStream = fopen(fileName, "r");
+	char buff[XPM_BUFF];
+	xpm* colors;
+	int counter;
+	if (fileStream != 0)
+	{
+		fscanf(fileStream, "%[$MFF\n]", buff);
+		int values[XPM_NUMBER_OF_VALUES];
+		for (int i = 0; i < XPM_NUMBER_OF_VALUES; i++)
+			fscanf(fileStream, "%d", &values[i]);
 
+		colors = new xpm[values[XPM_COLORS]];
+		char** data = new char*[values[XPM_HEIGHT]];
+		for (int i = 0; i < values[XPM_HEIGHT]; i++)
+			data[i] = new char[values[XPM_WIDTH]];
+		this->init(fileName, values[XPM_WIDTH], values[XPM_HEIGHT]);
+
+		for (int i = 0; i < values[XPM_COLORS]; i++)
+		{
+			fscanf(fileStream, "%s", &colors[i].id);
+			fscanf(fileStream, "%s", buff);
+			colors[i].color = atoi(buff);
+		}
+
+		for(int y = 0; y < this->height; y++)
+			for (int x = 0; x < this->width;)
+			{
+				fscanf(fileStream, "%s", buff);
+				counter = atoi(buff);
+				fscanf(fileStream, "%s", buff);
+				
+				for (int i = 0; i < NUMBER_OF_COLORS; i++)
+				{
+					if (colors[i].id == buff[0])
+					{
+						for (int n = 0; n < counter; n++)
+						{
+							img[y][x+n] = i;
+						}
+						x += counter;
+					}
+				}
+			}
+
+		delete[] colors;
+		delete[] data;
+	}
 }
 
 void file::saveFile(const char* fileName)
@@ -229,9 +276,9 @@ void file::saveXpmFile(const char* fileName)
 			for (int x = 0; x < this->width; x++)
 				for (int i = 0; i < NUMBER_OF_COLORS; i++)
 				{
-					if (img[y][x] == colors[i].color && x < this->width - 1)
+					if (this->img[y][x] == colors[i].color && x < this->width - 1)
 						fprintf(fileStream, "%c", colors[i].id);
-					else if (img[y][x] == colors[i].color && x == this->width - 1)
+					else if (this->img[y][x] == colors[i].color && x == this->width - 1)
 						fprintf(fileStream, "%c\n", colors[i].id);
 				}
 		fclose(fileStream);
@@ -241,7 +288,44 @@ void file::saveXpmFile(const char* fileName)
 
 void file::saveMffFile(const char* fileName)
 {
+	onDiskFile* fileStream = fopen(fileName, "w");
+	int counter = 0;
+	int c = 0;
+	if (fileStream != NULL)
+	{
+		xpm* colors = new xpm[NUMBER_OF_COLORS];
+		unsigned char a = 'a';
+		for (int i = 0; i < NUMBER_OF_COLORS; i++, a++)
+			colors[i] = { a, i };
 
+		fprintf(fileStream, "%s\n", "$MFF");
+		fprintf(fileStream, "%d %d %d\n", this->width, this->height, NUMBER_OF_COLORS);
+		for (int i = 0; i < NUMBER_OF_COLORS; i++)
+			fprintf(fileStream, "%c %d\n", colors[i].id, i);
+		for(int y = 0; y < this->height; y++)
+			for (int x = 0; x < this->width; x++)
+			{
+				if (counter == 0)
+					for (int i = 0; i < NUMBER_OF_COLORS; i++)
+						if (this->img[y][x] == i)
+							c = i;
+				if (img[y][x] == c)
+					counter++;
+				if (img[y][x] != c || x == this->width - 1)
+				{
+					if (x < this->width - 1)
+					{
+						fprintf(fileStream, "%d %c ", counter, colors[c].id);
+						x--;
+					}
+					else if (x == this->width - 1)
+						fprintf(fileStream, "%d %c\n", counter, colors[c].id);
+					counter = 0;
+				}
+			}
+		fclose(fileStream);
+		delete[] colors;
+	}
 }
 
 void file::undoLastAction()
@@ -278,6 +362,20 @@ void file::addRectangle()
 		if (stackCounter == DEFAULT_STACK_SIZE*stackSizeMultipler)
 			this->resizeStack();
 	}
+}
+
+void file::fillFromCursor()
+{
+	if (this->interactiveMode != true)
+	{
+		this->stack[stackCounter] = new fill(this->localCursor->getPositionPointer(), this->localCursor->getColorPointer(), &img[this->localCursor->position.y - MIN_Y_POSITION][this->localCursor->position.x - MIN_X_POSITION], this->width, this->height);
+		this->stackCounter++;
+		interactiveMode = true;
+
+		if (stackCounter == DEFAULT_STACK_SIZE*stackSizeMultipler)
+			this->resizeStack();
+	}
+	this->finishDrawing();
 }
 
 void file::cancelDrawing()
@@ -318,16 +416,17 @@ void file::updateView()
 			gotoxy(x + MIN_X_POSITION, y + MIN_Y_POSITION);
 			textbackground(img[y][x]);
 			putch(' ');
-		}
-	gotoxy(this->localCursor->position.x, this->localCursor->position.y);
+		}	
 	textcolor(this->localCursor->actualColor);
 	textbackground(this->img[this->localCursor->position.y - MIN_Y_POSITION][this->localCursor->position.x - MIN_X_POSITION]);
-	putch(this->localCursor->cursorCharacter);
 	if (interactiveMode)
 	{
 		this->stack[stackCounter - 1]->setEnd(this->localCursor->getPositionPointer());
+		this->stack[stackCounter - 1]->setColor(this->localCursor->getColorPointer());
 		this->stack[stackCounter - 1]->draw();
 	}
+	gotoxy(this->localCursor->position.x, this->localCursor->position.y);
+	putch(this->localCursor->cursorCharacter);
 }
 
 void file::updateImg()

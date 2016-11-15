@@ -42,6 +42,9 @@
     <ClCompile Include="math.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="fill.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="conio2.h">
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="xpm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fill.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

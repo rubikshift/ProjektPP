@@ -34,7 +34,7 @@ void shape::drawStraightLineOX(point start, point end, int** img)
 	for (int x = startX; x <= endX; x++)
 	{
 		if (img != 0)
-			img[this->start.y - MIN_Y_POSITION][x - MIN_X_POSITION] = this->color;
+			img[start.y - MIN_Y_POSITION][x - MIN_X_POSITION] = this->color;
 		else
 		{
 			gotoxy(x, start.y);

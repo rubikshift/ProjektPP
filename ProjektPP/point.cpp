@@ -5,3 +5,10 @@ bool point::operator==(point p)
 		return true;
 	else return false;
 }
+
+bool point::operator!=(point p)
+{
+	if (this->x != p.x && this->y != p.y)
+		return true;
+	else return false;
+}

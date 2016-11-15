@@ -3,6 +3,7 @@
 #include "cursor.h"
 #include "shape.h"
 #include "line.h"
+#include "fill.h"
 #include "rectangle.h"
 #include "extensions.h"
 
@@ -43,6 +44,7 @@ class file
 		void undoLastAction();
 		void addLine();
 		void addRectangle();
+		void fillFromCursor();
 		void cancelDrawing();
 		void finishDrawing();
 		bool isInteractiveModeEnabled();

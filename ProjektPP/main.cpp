@@ -6,9 +6,9 @@
 
 namespace UI
 {
-	char* text[] = { "Michal Krakowiak 165596", "esc = wyjscie", "strzalki = poruszanie", "spacja = zmiana koloru", "enter = zmiana koloru tla",
-		"l = rysowanie linii", "0123456789qwerty = wybor koloru" };
-	int shift = strlen(text[CHANGE_BACKGROUND_COLOR_INFO]) + 1;
+	char* text[] = { "Michal Krakowiak 165596", "esc = wyjscie", "strzalki = poruszanie",
+		"l = rysowanie linii", "k = rysowanie prostokata", "0123456789qwerty = wybor koloru" };
+	int shift = strlen(text[CHOSE_TEXT_COLOR_INFO]) + 1;
 }
 
 
@@ -71,10 +71,7 @@ void drawUI(const int* zn, const int* zero)
 	cputs(UI::text[CHOSE_TEXT_COLOR_INFO]);
 
 	gotoxy(1, 3);
-	cputs(UI::text[CHANGE_TEXT_COLOR_INFO]);
-	
-	gotoxy(1, 4);
-	cputs(UI::text[CHANGE_BACKGROUND_COLOR_INFO]);
+	cputs(UI::text[DRAW_RECTANGLE_INFO]);
 	
 	if (*zero) {
 		txt[16] = '0';
@@ -94,14 +91,17 @@ void drawUI(const int* zn, const int* zero)
 int main(int argc, char** argv) {
 	int input = 0, zero = 0;
 	bool toClose = false;
+	textmode(FULLSCREEN);
+	_setcursortype(_NOCURSOR);
 	// je¿eli program jest kompilowany w czystym jêzyku C
 	// proszê odkomentowaæ poni¿sz¹ liniê
 	// Conio2_Init();
 
 	file* f;
 
-	if(argc == 1)
-		f = new file("test.xpm", 50, 20);	
+	if (argc == 1)
+		//f = new file("test.xpm", 50, 20);	
+		f = new file("test.mff");
 	if (argc == 2)
 		f = new file(argv[1]);
 	settitle(UI::text[WINDOW_TITLE]);
@@ -124,6 +124,7 @@ int main(int argc, char** argv) {
 		else if (inputChangesTextColor(&input, f->localCursor->getColorPointer())) f->localCursor->setColor(changeColor(&input, f->localCursor->getColorPointer()));
 		else if ((input == 'l' || input == 'L') && f->isInteractiveModeEnabled() != true) f->addLine();
 		else if ((input == 'k' || input == 'K') && f->isInteractiveModeEnabled() != true) f->addRectangle();
+		else if ((input == 'f' || input == 'F') && f->isInteractiveModeEnabled() != true) f->fillFromCursor();
 		else if ((input == 'k' || input == 'K' || input == 'l' || input == 'L') && f->isInteractiveModeEnabled() == true) f->finishDrawing();
 		else if (f->isInteractiveModeEnabled() == true && input == ESC) f->cancelDrawing();
 		else if (f->isInteractiveModeEnabled() != true && input == BACKSPACE) f->undoLastAction();

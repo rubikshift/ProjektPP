@@ -40,78 +40,142 @@ void line::drawDiagonalLine(int** img)
 {
 	if (absolute(this->start.y - this->end.y) > absolute(this->start.x - this->end.x))
 		this->drawDiagonalLineOY(img);
-	else
+	else if (absolute(this->start.y - this->end.y) < absolute(this->start.x - this->end.x))
 		this->drawDiagonalLineOX(img);
+	else
+	{
+		int startY, endY;
+		if (this->start.y < this->end.y)
+		{
+			int y = this->start.y;
+			if (this->start.x < this->end.x)
+				for (int x = this->start.x; x <= this->end.x; x++, y++)
+				{
+					if (img != 0)
+						img[y - MIN_Y_POSITION][x - MIN_X_POSITION] = this->color;
+					else
+					{
+						gotoxy(x, y);
+						textbackground(this->color);
+						putch(' ');
+					}
+				}
+			else
+				for (int x = this->start.x; x >= this->end.x; x--, y++)
+				{
+					if (img != 0)
+						img[y - MIN_Y_POSITION][x - MIN_X_POSITION] = this->color;
+					else
+					{
+						gotoxy(x, y);
+						textbackground(this->color);
+						putch(' ');
+					}
+				}
+		}
+		else
+		{
+			int y = this->end.y;
+			if (this->start.x < this->end.x)
+				for (int x = this->end.x; x >= this->start.x; x--, y++)
+				{
+					if (img != 0)
+						img[y - MIN_Y_POSITION][x - MIN_X_POSITION] = this->color;
+					else
+					{
+						gotoxy(x, y);
+						textbackground(this->color);
+						putch(' ');
+					}
+				}
+			else
+				for (int x = this->end.x; x <= this->start.x; x++, y++)
+				{
+					if (img != 0)
+						img[y - MIN_Y_POSITION][x - MIN_X_POSITION] = this->color;
+					else
+					{
+						gotoxy(x, y);
+						textbackground(this->color);
+						putch(' ');
+					}
+				}
+		}
+	}
 	
 }
 
 void line::drawDiagonalLineOY(int** img)
 {
-	int breakPoints, partialLength;
-	point endCopy = this->end, startCopy = this->start;
-	breakPoints = absolute(this->start.x - this->end.x);
-	partialLength = absolute(this->start.y - this->end.y) / (breakPoints + 1);
-	for (int i = 0; i <= breakPoints; i++)
-	{
-		if (i == breakPoints)
+	int parts, partialLength;
+	point end, start;
+	start = this->start;
+	parts = absolute(this->start.x - this->end.x) + 1;
+	partialLength = absolute(this->start.y - this->end.y) / parts;
+	if(this->start.y < this->end.y)
+		for (int i = 0; i < parts; i++)
 		{
-			this->end = endCopy;
-			this->drawStraightLineOY(this->start, this->end, img);
+			if (i != parts - 1)
+				end = { start.x, start.y + partialLength};
+			else
+				end = this->end;
+		this->drawStraightLineOY(start, end, img);
+			if (this->start.x < this->end.x)
+				start.x++;
+			else if (this->start.x > this->end.x)
+				start.x--;
+			start.y += partialLength;
 		}
-		else
+	if (this->start.y > this->end.y)
+		for (int i = 0; i < parts; i++)
 		{
-			if (this->end.y > this->start.y)
-				this->end.y = this->start.y + partialLength;
+			if (i != parts - 1)
+				end = { start.x, start.y - partialLength };
 			else
-				this->end.y = this->start.y - partialLength;
-			this->end.x = this->start.x;
-
-			this->drawStraightLineOY(this->start, this->end, img);
-
-			if (this->end.y > this->start.y)
-				this->start.y += (partialLength + 1);
-			else
-				this->start.y -= (partialLength + 1);
-			if (this->start.x < endCopy.x)
-				this->start.x++;
-			else
-				this->start.x--;
+				end = this->end;
+			this->drawStraightLineOY(start, end, img);
+			if (this->start.x < this->end.x)
+				start.x++;
+			else if (this->start.x > this->end.x)
+				start.x--;
+			start.y -= partialLength;
 		}
-	}
 }
 
 void line::drawDiagonalLineOX(int** img)
 {
-	int breakPoints, partialLength;
-	point endCopy = this->end, startCopy = this->start;
-	breakPoints = absolute(this->start.y - this->end.y);
-	partialLength = absolute(this->start.x - this->end.x) / (breakPoints + 1);
-	for (int i = 0; i <= breakPoints; i++)
-	{
-		if (i == breakPoints)
+	int parts, partialLength;
+	point end, start;
+	start = this->start;
+	parts = absolute(this->start.y - this->end.y) + 1;
+	partialLength = absolute(this->start.x - this->end.x) / parts;
+	if (this->start.x < this->end.x)
+		for (int i = 0; i < parts; i++)
 		{
-			this->end = endCopy;
-			this->drawStraightLineOX(this->start, this->end, img);
+			if (i != parts - 1)
+				end = { start.x + partialLength, start.y };
+			else
+				end = this->end;
+		this->drawStraightLineOX(start, end, img);
+			if (this->start.y < this->end.y)
+				start.y++;
+			else if (this->start.y > this->end.y)
+				start.y--;
+			start.x += partialLength;
 		}
-		else
+	if (this->start.x > this->end.x)
+		for (int i = 0; i < parts; i++)
 		{
-			if (this->end.x > this->start.x)
-				this->end.x = this->start.x + partialLength;
+			if (i != parts - 1)
+				end = { start.x - partialLength, start.y };
 			else
-				this->end.x = this->start.x - partialLength;
-			this->end.x = this->start.x;
-
-			this->drawStraightLineOX(this->start, this->end, img);
-
-			if (this->end.x > this->start.x)
-				this->start.x += (partialLength + 1);
-			else
-				this->start.x -= (partialLength + 1);
-			if (this->start.y < endCopy.y)
-				this->start.y++;
-			else
-				this->start.y--;
+				end = this->end;
+			this->drawStraightLineOX(start, end, img);
+			if (this->start.y < this->end.y)
+				start.y++;
+			else if (this->start.y > this->end.y)
+				start.y--;
+			start.x -= partialLength;
 		}
-	}
 }
 
