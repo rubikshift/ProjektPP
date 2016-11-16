@@ -1,10 +1,10 @@
 #pragma once
+#include "mode.h"
 #include "point.h"
 #include "cursor.h"
 #include "shape.h"
-#include "line.h"
+#include "projektPP.h"
 #include "fill.h"
-#include "rectangle.h"
 #include "extensions.h"
 
 class file
@@ -19,6 +19,7 @@ class file
 		int stackCounter;
 		int stackSizeMultipler;
 		bool interactiveMode;
+		mode drawingMode;
 
 		extension getFileExtension(const char* fileName);
 		
@@ -47,10 +48,15 @@ class file
 		void fillFromCursor();
 		void cancelDrawing();
 		void finishDrawing();
+
 		bool isInteractiveModeEnabled();
-		
+		bool isUndoEnable();
+		mode getDrawingMode();
+
 		void resizeStack();
 
 		void updateView();
 		void updateImg();
+
+		const char* getFileName();
 };

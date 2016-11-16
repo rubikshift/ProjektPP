@@ -5,7 +5,7 @@
 cursor::cursor(int maxXPosition, int maxYPosition)
 {
 	this->position = { MIN_X_POSITION, MIN_Y_POSITION };
-	this->actualColor = LIGHTRED;
+	this->actualColor = BLACK;
 	this->maxXPosition = MIN_X_POSITION + maxXPosition - 1;
 	this->maxYPosition = MIN_Y_POSITION + maxYPosition - 1;
 	this->cursorCharacter = '*';

@@ -3,9 +3,10 @@
 #include <stdlib.h>
 #include "conio2.h"
 #include "file.h"
-#include "projektPP.h"
 #include "rgb.h"
 #include "xpm.h"
+#include "line.h"
+#include "rectangle.h"
 
 typedef FILE onDiskFile;
 
@@ -17,7 +18,7 @@ file::file(const char* fileName)
 file::file(const char* name, int width, int height)
 {
 	this->init(name, width, height);
-	buff = NULL;
+	this->buff = NULL;
 }
 
 void file::init(const char* name, int width, int height)
@@ -32,13 +33,14 @@ void file::init(const char* name, int width, int height)
 		for (int j = 0; j < width; j++)
 			img[i][j] = WHITE;
 	}
-	stack = new shape*[DEFAULT_STACK_SIZE];
-	stackSizeMultipler = 1;
-	stackCounter = 0;
+	this->stack = new shape*[DEFAULT_STACK_SIZE];
+	this->stackSizeMultipler = 1;
+	this->stackCounter = 0;
 	this->height = height;
 	this->width = width;
-	localCursor = new cursor(this->width, this->height);
-	interactiveMode = false;
+	this->localCursor = new cursor(this->width, this->height);
+	this->interactiveMode = false;
+	this->drawingMode = none;
 }
 
 file::~file()
@@ -51,6 +53,12 @@ file::~file()
 		delete stack[i];
 	delete[] stack;
 	delete localCursor;
+	if (buff != NULL)
+	{
+		for (int i = 0; i < height; i++)
+			delete[] buff[i];
+		delete[] buff;
+	}
 }
 
 void file::loadFile(const char* fileName)
@@ -63,13 +71,14 @@ void file::loadFile(const char* fileName)
 		case mff: this->loadMffFile(fileName); break;
 		case undefined: return; break;
 	}
-	buff = new int*[this->height];
+	this->buff = new int*[this->height];
 	for (int y = 0; y < this->height; y++)
 	{
-		buff[y] = new int[this->width];
+		this->buff[y] = new int[this->width];
 		for (int x = 0; x < this->width; x++)
-			buff[y][x] = img[y][x];
+			this->buff[y][x] = img[y][x];
 	}
+	this->localCursor->setColor(WHITE - img[this->localCursor->position.y - MIN_Y_POSITION][this->localCursor->position.x - MIN_X_POSITION]);
 }
 
 void file::loadBmpFile(const char* fileName)
@@ -83,19 +92,20 @@ void file::loadBmpFile(const char* fileName)
 		this->init(fileName, *(int*)&info[BMP_WIDTH_INFO], *(int*)&info[BMP_HEIGHT_INFO]);
 
 		unsigned char** data = new unsigned char*[this->height];
-		for (int i = 0; i < height; i++)
+		for (int i = 0; i < this->height; i++)
 		{
 			data[i] = new unsigned char[BMP_COLORS_PER_PIXEL * this->width];
 			fread(data[i], sizeof(unsigned char), BMP_COLORS_PER_PIXEL * this->width, fileStream);
+			fseek(fileStream, sizeof(unsigned char)*BMP_PADDING, SEEK_CUR);
 		}
 		fclose(fileStream);
 
-		for (int y = 0; y < this->height; y++)
+		for (int y = 0, n = this->height - 1; y < this->height && n >= 0; y++, n--)
 			for (int x = 0; x < this->width; x++)
 				for (int i = 0; i < NUMBER_OF_COLORS; i++)
-					if (data[y][x * BMP_COLORS_PER_PIXEL + BMP_R_POSITION] == rgbColors[i].r
-						&& data[y][x * BMP_COLORS_PER_PIXEL + BMP_G_POSITION] == rgbColors[i].g
-						&& data[y][x * BMP_COLORS_PER_PIXEL + BMP_B_POSITION] == rgbColors[i].b)
+					if (data[n][x * BMP_COLORS_PER_PIXEL + BMP_R_POSITION] == rgbColors[i].r
+						&& data[n][x * BMP_COLORS_PER_PIXEL + BMP_G_POSITION] == rgbColors[i].g
+						&& data[n][x * BMP_COLORS_PER_PIXEL + BMP_B_POSITION] == rgbColors[i].b)
 						this->img[y][x] = i;
 		for (int i = 0; i < this->height; i++)
 			delete[] data[i];
@@ -106,7 +116,7 @@ void file::loadBmpFile(const char* fileName)
 void file::loadXpmFile(const char* fileName)
 {
 	onDiskFile* fileStream = fopen(fileName, "r");
-	char buff[XPM_BUFF];
+	char buff[BUFF];
 	xpm* colors;
 	if (fileStream != 0)
 	{
@@ -143,6 +153,8 @@ void file::loadXpmFile(const char* fileName)
 						this->img[y][x] = colors[i].color;
 		
 		delete[] colors;
+		for (int i = 0; i < this->height; i++)
+			delete[] data[i];
 		delete[] data;
 	}
 }
@@ -150,7 +162,7 @@ void file::loadXpmFile(const char* fileName)
 void file::loadMffFile(const char* fileName)
 {
 	onDiskFile* fileStream = fopen(fileName, "r");
-	char buff[XPM_BUFF];
+	char buff[BUFF];
 	xpm* colors;
 	int counter;
 	if (fileStream != 0)
@@ -194,6 +206,8 @@ void file::loadMffFile(const char* fileName)
 			}
 
 		delete[] colors;
+		for (int i = 0; i < this->height; i++)
+			delete[] data[i];
 		delete[] data;
 	}
 }
@@ -208,7 +222,13 @@ void file::saveFile(const char* fileName)
 	case bmp: this->saveBmpFile(fileName);  break;
 	case xpm2: this->saveXpmFile(fileName); break;
 	case mff: this->saveMffFile(fileName); break;
-	case undefined: break;
+	case undefined: 
+		char* newFileName = new char[strlen(fileName) + strlen(".mff") + 1]; break;
+		memcpy(newFileName, fileName, strlen(fileName));
+		strcat(newFileName, ".mff");
+		newFileName[strlen(fileName) + strlen(".mff")] = 0;
+		this->saveFile(newFileName);
+		delete[] newFileName;
 	}
 }
 
@@ -219,7 +239,7 @@ void file::saveBmpFile(const char* fileName)
 	if (fileStream != NULL)
 	{
 		fwrite("BM", sizeof(char), BMP_ELEMENTS_HEADER_START, fileStream);		//Nag³ówek "BM"
-		buff = this->width*this->height*BMP_COLORS_PER_PIXEL + BMP_HEADER;
+		buff = this->width*this->height*BMP_COLORS_PER_PIXEL + BMP_HEADER + this->height*BMP_PADDING;
 		fwrite(&buff, sizeof(int), BMP_ONE_ELEMENT, fileStream);				//Ca³kowity rozmiar pliku
 		fseek(fileStream, BMP_BYTES_HEADER_TOSKIP, SEEK_CUR);					//Zarezerwowanie bajty
 		buff = BMP_OFFSET;
@@ -234,7 +254,7 @@ void file::saveBmpFile(const char* fileName)
 		fwrite(&buff, sizeof(short int), BMP_ONE_ELEMENT, fileStream);			//iloœæ bitów na pixel
 		buff = BMP_COMPRESION;
 		fwrite(&buff, sizeof(int), BMP_ONE_ELEMENT, fileStream);				//informacja o kompresji
-		buff = this->width*this->height*BMP_COLORS_PER_PIXEL;
+		buff = this->width*this->height*BMP_COLORS_PER_PIXEL + this->height*BMP_PADDING;
 		fwrite(&buff, sizeof(int), BMP_ONE_ELEMENT, fileStream);				//rozmiar tablicy pixeli
 		buff = BMP_RESOLUTION;
 		fwrite(&buff, sizeof(int), BMP_ONE_ELEMENT, fileStream);
@@ -244,7 +264,9 @@ void file::saveBmpFile(const char* fileName)
 		buff = BMP_IMPORTANT_COLOR;
 		fwrite(&buff, sizeof(int), BMP_ONE_ELEMENT, fileStream);				//wa¿ne kolory
 
-		for (int y = 0; y < this->height; y++)
+		buff = 0;
+		for (int y = this->height - 1; y >= 0; y--)
+		{
 			for (int x = 0; x < this->width; x++)
 				for (int i = 0; i < NUMBER_OF_COLORS; i++)
 					if (img[y][x] == i)
@@ -253,6 +275,9 @@ void file::saveBmpFile(const char* fileName)
 						fwrite(&rgbColors[i].g, sizeof(unsigned char), BMP_ONE_ELEMENT, fileStream);
 						fwrite(&rgbColors[i].r, sizeof(unsigned char), BMP_ONE_ELEMENT, fileStream);
 					}
+			fwrite(&buff, sizeof(unsigned char), BMP_PADDING, fileStream);
+		}
+
 		fclose(fileStream);
 	}
 }
@@ -348,6 +373,7 @@ void file::addLine()
 		
 		if (stackCounter == DEFAULT_STACK_SIZE*stackSizeMultipler)
 			this->resizeStack();
+		drawingMode = drawLine;
 	}	
 }
 
@@ -361,6 +387,7 @@ void file::addRectangle()
 		
 		if (stackCounter == DEFAULT_STACK_SIZE*stackSizeMultipler)
 			this->resizeStack();
+		drawingMode = drawRectangle;
 	}
 }
 
@@ -382,6 +409,7 @@ void file::cancelDrawing()
 {
 	this->undoLastAction();
 	interactiveMode = false;
+	drawingMode = none;
 }
 
 void file::finishDrawing()
@@ -389,6 +417,7 @@ void file::finishDrawing()
 	this->stack[stackCounter-1]->setEnd(this->localCursor->getPositionPointer());
 	this->updateImg();
 	interactiveMode = false;
+	drawingMode = none;
 }
 
 bool file::isInteractiveModeEnabled()
@@ -400,10 +429,8 @@ void file::resizeStack()
 {
 	stackSizeMultipler++;
 	shape** temp = new shape*[DEFAULT_STACK_SIZE*stackSizeMultipler];
-	for (int i = 0; i <stackCounter; i++)
-		memcpy(temp[i], stack[i], sizeof(stack[i]));
-	for (int i = 0; i < DEFAULT_STACK_SIZE * (stackSizeMultipler-1); i++)
-		delete stack[i];
+	for (int i = 0; i < stackCounter; i++)
+		temp[i] = stack[i];
 	delete[] stack;
 	stack = temp;
 }
@@ -416,7 +443,7 @@ void file::updateView()
 			gotoxy(x + MIN_X_POSITION, y + MIN_Y_POSITION);
 			textbackground(img[y][x]);
 			putch(' ');
-		}	
+		}
 	textcolor(this->localCursor->actualColor);
 	textbackground(this->img[this->localCursor->position.y - MIN_Y_POSITION][this->localCursor->position.x - MIN_X_POSITION]);
 	if (interactiveMode)
@@ -453,4 +480,21 @@ extension file::getFileExtension(const char* fileName)
 		return mff;
 	else
 		return undefined;
+}
+
+mode file::getDrawingMode()
+{
+	return this->drawingMode;
+}
+
+const char* file::getFileName()
+{
+	return this->name;
+}
+
+bool file::isUndoEnable()
+{
+	if (this->stackCounter > 0 && this->interactiveMode != true)
+		return true;
+	else return false;
 }

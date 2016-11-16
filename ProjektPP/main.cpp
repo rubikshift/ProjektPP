@@ -1,16 +1,12 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "projektPP.h"
 #include "conio2.h"
 #include "file.h"
+#include "interface.h"
 
-namespace UI
-{
-	char* text[] = { "Michal Krakowiak 165596", "esc = wyjscie", "strzalki = poruszanie",
-		"l = rysowanie linii", "k = rysowanie prostokata", "0123456789qwerty = wybor koloru" };
-	int shift = strlen(text[CHOSE_TEXT_COLOR_INFO]) + 1;
-}
-
+//#define DEBUG
 
 int changeColor(const int* input, const int* acctualColor)
 {
@@ -51,28 +47,67 @@ bool inputChangesTextColor(const int* input, const int* acctualColor)
 		return false;
 }
 
-void drawUI(const int* zn, const int* zero)
+void drawUI(const int* zn, const int* zero, file* actualFile = NULL)
 {
-	char txt[32] = "kod klawisza: 0x";
+	char buff[BUFF];
 	textbackground(BLACK);
-	clrscr();
-	textcolor(LIGHTGRAY);
+	clrscr();	
 
-	gotoxy(1, 1);
-	cputs(UI::text[EXIT_INFO]);
-	
-	gotoxy(1 + UI::shift, 1);
-	cputs(UI::text[DRAW_LINE_INFO]);
-
-	gotoxy(1, 2);
-	cputs(UI::text[MOVE_INFO]);
-	
-	gotoxy(1 + UI::shift, 2);
-	cputs(UI::text[CHOSE_TEXT_COLOR_INFO]);
-
-	gotoxy(1, 3);
-	cputs(UI::text[DRAW_RECTANGLE_INFO]);
-	
+	for (int i = 0; i < UI_ELEMENTS; i++)
+	{
+		textcolor(LIGHTGRAY);
+		if (i == UNDO_INFO - 1 && actualFile != NULL)
+			if(actualFile->isUndoEnable() != true)
+				textcolor(DARKGRAY);
+		if (i < MODE_INFO - 1)
+		{
+			gotoxy(UI[i].position.x, UI[i].position.y);
+			cputs(UI[i].text);
+		}
+		if (UI[i].position.y == FILE_NAME_INFO && actualFile != NULL)
+		{
+			gotoxy(UI[i].position.x + strlen(UI[i].text), UI[i].position.y);
+			cputs(actualFile->getFileName());
+		}
+		else if ((UI[i].position.y == CURSOR_X_POSITION_INFO) && actualFile != NULL)
+		{
+			gotoxy(UI[i].position.x + strlen(UI[i].text), UI[i].position.y);
+			itoa(actualFile->localCursor->position.x - MIN_X_POSITION + 1, buff, 10);
+			cputs(buff);
+			memset(buff, 0, strlen(buff));
+		}
+		else if ((UI[i].position.y == CURSOR_Y_POSITION_INFO) && actualFile != NULL)
+		{
+			gotoxy(UI[i].position.x + strlen(UI[i].text), UI[i].position.y);
+			itoa(actualFile->localCursor->position.y - MIN_Y_POSITION + 1, buff, 10);
+			cputs(buff);
+			memset(buff, 0, strlen(buff));
+		}
+		else if ((UI[i].position.y == MODE_INFO) && actualFile != NULL)
+			if (actualFile->getDrawingMode() == none)
+			{
+				textcolor(DARKGRAY);
+				gotoxy(UI[i].position.x, UI[i].position.y);
+				cputs(UI[i].text);
+				break;
+			}
+		else if ((UI[i].position.y == MODE_INFO) &&  actualFile != NULL && i == LINE_MODE_INFO - 1)
+			if (actualFile->getDrawingMode() == drawLine)
+			{
+				gotoxy(UI[i].position.x, UI[i].position.y);
+				cputs(UI[i].text);
+				break;
+			}
+		else if ((UI[i].position.y == MODE_INFO) && actualFile != NULL && i == RECTANGLE_MODE_INFO - 1)
+			if (actualFile->getDrawingMode() == drawRectangle)
+			{
+				gotoxy(UI[i].position.x, UI[i].position.y);
+				cputs(UI[i].text);
+				break;
+			}
+	}
+#ifdef DEBUG
+	char txt[32] = "kod klawisza: 0x";
 	if (*zero) {
 		txt[16] = '0';
 		txt[17] = '0';
@@ -84,54 +119,211 @@ void drawUI(const int* zn, const int* zero)
 	else {
 		itoa(*zn, txt + 16, 16);
 	}
-	gotoxy(1, 5);
+	textcolor(LIGHTGRAY);
+	gotoxy(UI_X_POSITION, MODE_INFO + 2);
 	cputs(txt);
+#endif // DEBUG
+}
+
+char* inputFileName()
+{
+	char* fileName = new char[MAX_FILENAME_LENGTH];
+	int input, n = 0;
+	memset(fileName, 0, MAX_FILENAME_LENGTH);
+	bool toStop = false;
+	do
+	{
+		input = getch();
+		if (n < MAX_FILENAME_LENGTH && ((input >= '0' && input <= '9') || (input >= 'A' && input <= 'Z') || (input >= 'a' && input <= 'z') || input == '.' || input == '-' || input == '_'))
+		{
+			gotoxy(UI[UI_ELEMENTS-4].position.x + strlen(UI[UI_ELEMENTS - 4].text) + n, UI[UI_ELEMENTS - 4].position.y);
+			putch((char)input);
+			fileName[n] = (char)input;
+			n++;
+		}
+		if (input == ENTER && n > 0)
+			toStop = true;
+	} while (toStop != true);
+	return fileName;
+}
+
+int inputHeightWidth(interface UItoPrint)
+{
+	char buff[BUFF];
+	memset(buff, 0, BUFF);
+	int input = 0, n = 0, x;
+	bool toStop = false;
+	while (toStop != true)
+	{
+		input = getch();
+		if (n < BUFF && input >= '0' && input <= '9')
+		{
+			gotoxy(UItoPrint.position.x + strlen(UItoPrint.text) + n, UItoPrint.position.y);
+			putch((char)input);
+			buff[n] = (char)input;
+			n++;
+		}
+		if (input == ENTER && n > 0)
+			toStop = true;
+	}
+	x = atoi(buff);
+	return x;
+}
+
+void openNewFile(file** actualFile, int* actualFileId, int* fileCounter)
+{
+	int width, height;
+	char* fileName;
+	textbackground(BLACK);
+	textcolor(LIGHTGRAY);
+	gotoxy(UI[UI_ELEMENTS-4].position.x, UI[UI_ELEMENTS - 4].position.y);
+	cputs(UI[UI_ELEMENTS - 4].text);
+	
+	fileName = inputFileName();	
+	gotoxy(UI[UI_ELEMENTS - 3].position.x, UI[UI_ELEMENTS - 3].position.y);
+	cputs(UI[UI_ELEMENTS - 3].text);
+	width = inputHeightWidth(UI[UI_ELEMENTS - 3]);
+	gotoxy(UI[UI_ELEMENTS - 2].position.x, UI[UI_ELEMENTS - 2].position.y);
+	cputs(UI[UI_ELEMENTS - 2].text);
+	height = inputHeightWidth(UI[UI_ELEMENTS - 2]);
+	actualFile[0] = new file(fileName, width, height);
+	*actualFileId = *fileCounter;
+	*fileCounter++;
+	delete[] fileName;
+
+}
+
+void resizeFileTab(file** fileTab, const int* counter, int* multipler)
+{
+	*multipler++;
+	file** temp = new file*[DEFAULT_NUMBER_OF_FILES*(*multipler)];
+	for (int i = 0; i < *counter; i++)
+		temp[i] = fileTab[i];
+	delete[] fileTab;
+	fileTab = temp;
+}
+
+void openDefaultFile(file** openedFiles, int* actualFileId, int* fileCounter)
+{
+	if (fopen("default.bmp", "r") != NULL)
+		openedFiles[*fileCounter] = new file("default.bmp");
+	else if (fopen("default.xpm", "r") != NULL)
+		openedFiles[*fileCounter] = new file("default.xpm");
+	else if (fopen("default.mff", "r") != NULL)
+		openedFiles[*fileCounter] = new file("default.mff");
+	else return;
+}
+
+void openFile(file** openedFiles, int* actualFileId, int* fileCounter)
+{
+	char* fileName;
+	gotoxy(UI[UI_ELEMENTS - 4].position.x, UI[UI_ELEMENTS - 4].position.y);
+	cputs(UI[UI_ELEMENTS - 4].text);
+	fileName = inputFileName();
+	if (fopen(fileName, "r") != NULL)
+	{
+		openedFiles[*fileCounter] = new file(fileName);
+		*actualFileId = *fileCounter;
+		*fileCounter++;
+	}
+	delete[] fileName;
+}
+
+void init(file** openedFiles, int* actualFileId, int* fileCounter)
+{
+	int input;
+	while (*fileCounter == 0)
+	{
+		drawUI(&input, &input);
+		input = getch();
+		if (input == 'i' || input == 'I')
+			openDefaultFile(openedFiles, actualFileId, fileCounter);
+		else if (input == 'o' || input == 'O')
+			openFile(openedFiles, actualFileId, fileCounter);
+		else if (input == 'n' || input == 'N')
+		{
+			openNewFile(openedFiles, actualFileId, fileCounter);
+			*actualFileId = *fileCounter;
+			*fileCounter++;
+		}
+	} 
 }
 
 int main(int argc, char** argv) {
 	int input = 0, zero = 0;
 	bool toClose = false;
-	textmode(FULLSCREEN);
-	_setcursortype(_NOCURSOR);
-	// je¿eli program jest kompilowany w czystym jêzyku C
-	// proszê odkomentowaæ poni¿sz¹ liniê
+	int fileCounter = 0, fileNumberMultipler = 1, actualFileId = 0;
+	file** openedFiles = new file*[DEFAULT_NUMBER_OF_FILES];
 	// Conio2_Init();
+	settitle("Michal Krakowiak 165596");
+	textmode(FULLSCREEN);
 
-	file* f;
+	if (argc > 1)
+	{
+		for (int i = 1; i < argc; i++)
+		{
+			openedFiles[i - 1] = new file(argv[i]);
+			fileCounter++;
+			if (fileCounter == DEFAULT_NUMBER_OF_FILES*fileNumberMultipler)
+				resizeFileTab(openedFiles, &fileCounter, &fileNumberMultipler);
+		}
+		actualFileId = 0;
+	}
 
-	if (argc == 1)
-		//f = new file("test.xpm", 50, 20);	
-		f = new file("test.mff");
-	if (argc == 2)
-		f = new file(argv[1]);
-	settitle(UI::text[WINDOW_TITLE]);
-
+	init(openedFiles, &actualFileId, &fileCounter);	
 	do 
 	{
-		drawUI(&input, &zero);
-		f->updateView();
+		drawUI(&input, &zero, openedFiles[actualFileId]);
+		openedFiles[actualFileId]->updateView();
 		zero = 0;
 		input = getch();
 		if(input == 0)
 		{
 			zero = 1;
 			input = getch();
-			if (input == ARROW_UP) f->localCursor->moveUp();
-			else if (input == ARROW_DOWN) f->localCursor->moveDown();
-			else if (input == ARROW_LEFT) f->localCursor->moveLeft();
-			else if (input == ARROW_RIGHT) f->localCursor->moveRight();
+			if (input == ARROW_UP) openedFiles[actualFileId]->localCursor->moveUp();
+			else if (input == ARROW_DOWN) openedFiles[actualFileId]->localCursor->moveDown();
+			else if (input == ARROW_LEFT) openedFiles[actualFileId]->localCursor->moveLeft();
+			else if (input == ARROW_RIGHT) openedFiles[actualFileId]->localCursor->moveRight();
+			else if (input == PAGEDOWN && openedFiles[actualFileId]->isInteractiveModeEnabled() == false && actualFileId < fileCounter) actualFileId++;
+			else if (input == PAGEUP && actualFileId > 0) actualFileId--;
 		}
-		else if (inputChangesTextColor(&input, f->localCursor->getColorPointer())) f->localCursor->setColor(changeColor(&input, f->localCursor->getColorPointer()));
-		else if ((input == 'l' || input == 'L') && f->isInteractiveModeEnabled() != true) f->addLine();
-		else if ((input == 'k' || input == 'K') && f->isInteractiveModeEnabled() != true) f->addRectangle();
-		else if ((input == 'f' || input == 'F') && f->isInteractiveModeEnabled() != true) f->fillFromCursor();
-		else if ((input == 'k' || input == 'K' || input == 'l' || input == 'L') && f->isInteractiveModeEnabled() == true) f->finishDrawing();
-		else if (f->isInteractiveModeEnabled() == true && input == ESC) f->cancelDrawing();
-		else if (f->isInteractiveModeEnabled() != true && input == BACKSPACE) f->undoLastAction();
-		else if (f->isInteractiveModeEnabled() == false && input == ESC) toClose = true;
-		else if (f->isInteractiveModeEnabled() == false && input == 's') f->saveFile();
+		else if (inputChangesTextColor(&input, openedFiles[actualFileId]->localCursor->getColorPointer())) openedFiles[actualFileId]->localCursor->setColor(changeColor(&input, openedFiles[actualFileId]->localCursor->getColorPointer()));
+		else if ((input == 'l' || input == 'L') && openedFiles[actualFileId]->isInteractiveModeEnabled() != true) openedFiles[actualFileId]->addLine();
+		else if ((input == 'k' || input == 'K') && openedFiles[actualFileId]->isInteractiveModeEnabled() != true) openedFiles[actualFileId]->addRectangle();
+		else if ((input == 'f' || input == 'F') && openedFiles[actualFileId]->isInteractiveModeEnabled() != true) openedFiles[actualFileId]->fillFromCursor();
+		else if ((input == 'k' || input == 'K' || input == 'l' || input == 'L') && openedFiles[actualFileId]->isInteractiveModeEnabled() == true) openedFiles[actualFileId]->finishDrawing();
+		else if (openedFiles[actualFileId]->isInteractiveModeEnabled() == true && input == ESC) openedFiles[actualFileId]->cancelDrawing();
+		else if (openedFiles[actualFileId]->isInteractiveModeEnabled() == false && input == BACKSPACE) openedFiles[actualFileId]->undoLastAction();
+		else if (openedFiles[actualFileId]->isInteractiveModeEnabled() == false && input == ESC) toClose = true;
+		else if (openedFiles[actualFileId]->isInteractiveModeEnabled() == false && (input == 's' || input == 'S'))
+		{
+			textbackground(BLACK);
+			textcolor(LIGHTGRAY);
+			gotoxy(UI[UI_ELEMENTS - 1].position.x, UI[UI_ELEMENTS - 1].position.y);
+			cputs(UI[UI_ELEMENTS - 1].text);
+			input = getch();
+			if (input == 't' || input == 'T')
+			{
+				char* fileName = inputFileName();
+				openedFiles[actualFileId]->saveFile(fileName);
+				delete[] fileName;
+			}
+			else
+				openedFiles[actualFileId]->saveFile();
+		}
+		else if (openedFiles[actualFileId]->isInteractiveModeEnabled() == false && (input == 'i' || input == 'I'))
+			openDefaultFile(openedFiles, &actualFileId, &fileCounter);
+		else if (openedFiles[actualFileId]->isInteractiveModeEnabled() == false && (input == 'o' || input == 'O'))
+			openFile(openedFiles, &actualFileId, &fileCounter);
+		else if (openedFiles[actualFileId]->isInteractiveModeEnabled() == false && (input == 'n' || input == 'N'))
+			openNewFile(openedFiles, &actualFileId, &fileCounter);
+		if (fileCounter == DEFAULT_NUMBER_OF_FILES*fileNumberMultipler)
+			resizeFileTab(openedFiles, &fileCounter, &fileNumberMultipler);
 	} while (!toClose);
 
-	delete f;
+	for (int i = 0; i < fileCounter; i++)
+		delete openedFiles[i];
+	delete[] openedFiles;
 	return 0;
 }

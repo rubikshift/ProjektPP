@@ -12,7 +12,7 @@ void rectangle::draw(int** img)
 {
 	if(this->start == this->end)
 	{
-		if(img != 0)
+		if(img != NULL)
 			img[this->start.y - MIN_Y_POSITION][this->start.x - MIN_X_POSITION] = this->color;
 		else
 		{

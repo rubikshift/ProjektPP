@@ -21,7 +21,7 @@ void line::drawStraightLine(int** img)
 {
 	if (this->start == this->end)
 	{
-		if(img != 0)
+		if(img != NULL)
 			img[this->start.y - MIN_Y_POSITION][this->start.x - MIN_X_POSITION] = this->color;
 		else
 		{
@@ -43,15 +43,13 @@ void line::drawDiagonalLine(int** img)
 	else if (absolute(this->start.y - this->end.y) < absolute(this->start.x - this->end.x))
 		this->drawDiagonalLineOX(img);
 	else
-	{
-		int startY, endY;
-		if (this->start.y < this->end.y)
+	{		if (this->start.y < this->end.y)
 		{
 			int y = this->start.y;
 			if (this->start.x < this->end.x)
 				for (int x = this->start.x; x <= this->end.x; x++, y++)
 				{
-					if (img != 0)
+					if (img != NULL)
 						img[y - MIN_Y_POSITION][x - MIN_X_POSITION] = this->color;
 					else
 					{
@@ -63,7 +61,7 @@ void line::drawDiagonalLine(int** img)
 			else
 				for (int x = this->start.x; x >= this->end.x; x--, y++)
 				{
-					if (img != 0)
+					if (img != NULL)
 						img[y - MIN_Y_POSITION][x - MIN_X_POSITION] = this->color;
 					else
 					{
@@ -79,7 +77,7 @@ void line::drawDiagonalLine(int** img)
 			if (this->start.x < this->end.x)
 				for (int x = this->end.x; x >= this->start.x; x--, y++)
 				{
-					if (img != 0)
+					if (img != NULL)
 						img[y - MIN_Y_POSITION][x - MIN_X_POSITION] = this->color;
 					else
 					{
@@ -91,7 +89,7 @@ void line::drawDiagonalLine(int** img)
 			else
 				for (int x = this->end.x; x <= this->start.x; x++, y++)
 				{
-					if (img != 0)
+					if (img != NULL)
 						img[y - MIN_Y_POSITION][x - MIN_X_POSITION] = this->color;
 					else
 					{

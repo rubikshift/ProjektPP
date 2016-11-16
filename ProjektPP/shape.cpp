@@ -33,7 +33,7 @@ void shape::drawStraightLineOX(point start, point end, int** img)
 
 	for (int x = startX; x <= endX; x++)
 	{
-		if (img != 0)
+		if (img != NULL)
 			img[start.y - MIN_Y_POSITION][x - MIN_X_POSITION] = this->color;
 		else
 		{
@@ -60,7 +60,7 @@ void shape::drawStraightLineOY(point start, point end, int** img)
 
 	for (int y = startY; y <= endY; y++)
 	{
-		if (img != 0)
+		if (img != NULL)
 			img[y - MIN_Y_POSITION][start.x - MIN_X_POSITION] = this->color;
 		else
 		{

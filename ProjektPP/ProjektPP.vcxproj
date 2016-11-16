@@ -160,8 +160,10 @@
     <ClInclude Include="file.h" />
     <ClInclude Include="cursor.h" />
     <ClInclude Include="fill.h" />
+    <ClInclude Include="interface.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="math.h" />
+    <ClInclude Include="mode.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="projektPP.h" />
     <ClInclude Include="rectangle.h" />
