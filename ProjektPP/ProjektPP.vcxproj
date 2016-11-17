@@ -146,7 +146,6 @@
     <ClCompile Include="conio2.cpp" />
     <ClCompile Include="cursor.cpp" />
     <ClCompile Include="file.cpp" />
-    <ClCompile Include="fill.cpp" />
     <ClCompile Include="line.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math.cpp" />
@@ -159,7 +158,6 @@
     <ClInclude Include="extensions.h" />
     <ClInclude Include="file.h" />
     <ClInclude Include="cursor.h" />
-    <ClInclude Include="fill.h" />
     <ClInclude Include="interface.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="math.h" />

@@ -351,7 +351,6 @@ int main(int argc, char** argv) {
 			break;
 
 		}
-		/*if ((input == 'f' || input == 'F') && openedFiles[actualFileId]->isInteractiveModeEnabled() != true) openedFiles[actualFileId]->fillFromCursor();*/
 		if (fileCounter == DEFAULT_NUMBER_OF_FILES*fileNumberMultipler)
 			resizeFileTab(openedFiles, fileCounter, fileNumberMultipler);
 	} while (!toClose);

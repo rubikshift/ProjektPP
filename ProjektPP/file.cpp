@@ -395,20 +395,6 @@ void file::addRectangle()
 	}
 }
 
-void file::fillFromCursor()
-{
-	if (this->interactiveMode != true)
-	{
-		this->stack[stackCounter] = new fill(this->localCursor->getPositionPointer(), this->localCursor->getColorPointer(), &img[this->localCursor->position.y - MIN_Y_POSITION][this->localCursor->position.x - MIN_X_POSITION], this->width, this->height);
-		this->stackCounter++;
-		interactiveMode = true;
-
-		if (stackCounter == DEFAULT_STACK_SIZE*stackSizeMultipler)
-			this->resizeStack();
-	}
-	this->finishDrawing();
-}
-
 void file::cancelDrawing()
 {
 	this->undoLastAction();

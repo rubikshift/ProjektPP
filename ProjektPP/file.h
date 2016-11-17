@@ -4,7 +4,6 @@
 #include "cursor.h"
 #include "shape.h"
 #include "projektPP.h"
-#include "fill.h"
 #include "extensions.h"
 
 class file
@@ -45,7 +44,6 @@ class file
 		void undoLastAction();
 		void addLine();
 		void addRectangle();
-		void fillFromCursor();
 		void cancelDrawing();
 		void finishDrawing();
 
