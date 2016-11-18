@@ -1,0 +1,27 @@
+#pragma once
+
+/*STALE KLAWISZOWE*/
+#define ESC 0x1b
+#define ARROW_UP 0x48
+#define ARROW_DOWN 0x50
+#define ARROW_LEFT 0x4b
+#define ARROW_RIGHT 0x4d
+#define ENTER 0x0d
+#define BACKSPACE 0x08
+#define PAGEUP 0x49
+#define PAGEDOWN 0x51
+#define DELETE 0x53
+
+/*STALE KURSORA*/
+#define MIN_X_POSITION 38
+#define MIN_Y_POSITION 2
+
+/*STALA STOSTU*/
+#define DEFAULT_STACK_SIZE 50
+#define DEFAULT_NUMBER_OF_FILES 10
+
+/*POZOSTALE STALE*/
+#define BUFF 8
+#define NUMBER_OF_COLORS 16
+#define MAX_FILENAME_LENGTH 15
+

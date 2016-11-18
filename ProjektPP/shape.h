@@ -13,6 +13,7 @@ class shape
 
 		void drawStraightLineOY(point start, point end, int** img = NULL);
 		void drawStraightLineOX(point start, point end, int** img = NULL);
+		void setPixel(int y, int x, int color, int** img = NULL);
 	public:
 		virtual void draw(int** img = NULL) = 0;
 

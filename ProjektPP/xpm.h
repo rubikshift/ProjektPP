@@ -1,8 +1,17 @@
 #pragma once
-struct xpm
+struct xpmColor
 {
 	unsigned char id;
 	int color;
+};
+
+enum xpm
+{
+	xpmWidth,
+	xpmHeight,
+	xpmColors,
+	xpmCharactersPerPixel,
+	xpmNumberOfValues
 };
 
 const char* hexColor[] = {

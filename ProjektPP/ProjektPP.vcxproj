@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BasicFileOperations.cpp" />
     <ClCompile Include="conio2.cpp" />
     <ClCompile Include="cursor.cpp" />
     <ClCompile Include="file.cpp" />
@@ -150,10 +151,12 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math.cpp" />
     <ClCompile Include="point.cpp" />
-    <ClCompile Include="ractangle.cpp" />
+    <ClCompile Include="rectangle.cpp" />
     <ClCompile Include="shape.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BasicFileOperations.h" />
+    <ClInclude Include="bmp.h" />
     <ClInclude Include="conio2.h" />
     <ClInclude Include="extensions.h" />
     <ClInclude Include="file.h" />
@@ -161,9 +164,10 @@
     <ClInclude Include="interface.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="math.h" />
+    <ClInclude Include="mff.h" />
     <ClInclude Include="mode.h" />
     <ClInclude Include="point.h" />
-    <ClInclude Include="projektPP.h" />
+    <ClInclude Include="const.h" />
     <ClInclude Include="rectangle.h" />
     <ClInclude Include="rgb.h" />
     <ClInclude Include="shape.h" />

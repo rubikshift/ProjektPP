@@ -1,6 +1,6 @@
 #include "cursor.h"
 #include "conio2.h"
-#include "projektPP.h"
+#include "const.h"
 
 cursor::cursor(int maxXPosition, int maxYPosition)
 {
@@ -12,9 +12,7 @@ cursor::cursor(int maxXPosition, int maxYPosition)
 }
 
 void cursor::setColor(int color)
-{
-	this->actualColor = color;
-}
+{ this->actualColor = color; }
 
 void cursor::moveUp()
 {
@@ -41,11 +39,7 @@ void cursor::moveRight()
 }
 
 point* cursor::getPositionPointer()
-{
-	return &(this->position);
-}
+{ return &(this->position); }
 
 int* cursor::getColorPointer()
-{
-	return &(this->actualColor);
-}
+{ return &(this->actualColor); }

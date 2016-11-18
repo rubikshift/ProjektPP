@@ -1,21 +1,15 @@
 #include "shape.h"
-#include "projektPP.h"
+#include "const.h"
 #include "conio2.h"
 
 void shape::setStart(const point* p)
-{
-	this->start = *p;
-}
+{ this->start = *p; }
 
 void shape::setEnd(const point* p)
-{
-	this->end = *p;
-}
+{ this->end = *p; }
 
 void shape::setColor(const int* color)
-{
-	this->color = *color;
-}
+{ this->color = *color;}
 
 void shape::drawStraightLineOX(point start, point end, int** img)
 {
@@ -32,16 +26,7 @@ void shape::drawStraightLineOX(point start, point end, int** img)
 	}
 
 	for (int x = startX; x <= endX; x++)
-	{
-		if (img != NULL)
-			img[start.y - MIN_Y_POSITION][x - MIN_X_POSITION] = this->color;
-		else
-		{
-			gotoxy(x, start.y);
-			textbackground(this->color);
-			putch(' ');
-		}
-	}
+		this->setPixel(start.y, x, this->color, img);
 }
 
 void shape::drawStraightLineOY(point start, point end, int** img)
@@ -59,14 +44,17 @@ void shape::drawStraightLineOY(point start, point end, int** img)
 	}
 
 	for (int y = startY; y <= endY; y++)
+		this->setPixel(y, start.x, this->color, img);
+}
+
+void shape::setPixel(int y, int x, int color, int** img)
+{
+	if (img != NULL)
+		img[y - MIN_Y_POSITION][x - MIN_X_POSITION] = color;
+	else
 	{
-		if (img != NULL)
-			img[y - MIN_Y_POSITION][start.x - MIN_X_POSITION] = this->color;
-		else
-		{
-			gotoxy(start.x, y);
-			textbackground(this->color);
-			putch(' ');
-		}
+		gotoxy(x, y);
+		textbackground(color);
+		putch(' ');
 	}
 }

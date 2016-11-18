@@ -1,7 +1,7 @@
 #include "line.h"
 #include "math.h"
 #include "conio2.h"
-#include "projektPP.h"
+#include "const.h"
 
 line::line(const point* start, const int* color)
 {
@@ -20,16 +20,7 @@ void line::draw(int** img)
 void line::drawStraightLine(int** img)
 {
 	if (this->start == this->end)
-	{
-		if(img != NULL)
-			img[this->start.y - MIN_Y_POSITION][this->start.x - MIN_X_POSITION] = this->color;
-		else
-		{
-			gotoxy(this->start.x, this->start.y );
-			textbackground(this->color);
-			putch(' ');
-		}
-	}
+		setPixel(this->start.y, this->start.x, this->color, img);
 	else if (this->start.y == this->end.y)
 		this->drawStraightLineOX(this->start, this->end, img);
 	else if (this->start.x == this->end.x)
@@ -48,56 +39,20 @@ void line::drawDiagonalLine(int** img)
 			int y = this->start.y;
 			if (this->start.x < this->end.x)
 				for (int x = this->start.x; x <= this->end.x; x++, y++)
-				{
-					if (img != NULL)
-						img[y - MIN_Y_POSITION][x - MIN_X_POSITION] = this->color;
-					else
-					{
-						gotoxy(x, y);
-						textbackground(this->color);
-						putch(' ');
-					}
-				}
+					this->setPixel(y, x, this->color, img);
 			else
 				for (int x = this->start.x; x >= this->end.x; x--, y++)
-				{
-					if (img != NULL)
-						img[y - MIN_Y_POSITION][x - MIN_X_POSITION] = this->color;
-					else
-					{
-						gotoxy(x, y);
-						textbackground(this->color);
-						putch(' ');
-					}
-				}
+					this->setPixel(y, x, this->color, img);
 		}
 		else
 		{
 			int y = this->end.y;
 			if (this->start.x < this->end.x)
 				for (int x = this->end.x; x >= this->start.x; x--, y++)
-				{
-					if (img != NULL)
-						img[y - MIN_Y_POSITION][x - MIN_X_POSITION] = this->color;
-					else
-					{
-						gotoxy(x, y);
-						textbackground(this->color);
-						putch(' ');
-					}
-				}
+					this->setPixel(y, x, this->color, img);
 			else
 				for (int x = this->end.x; x <= this->start.x; x++, y++)
-				{
-					if (img != NULL)
-						img[y - MIN_Y_POSITION][x - MIN_X_POSITION] = this->color;
-					else
-					{
-						gotoxy(x, y);
-						textbackground(this->color);
-						putch(' ');
-					}
-				}
+					this->setPixel(y, x, this->color, img);
 		}
 	}
 	

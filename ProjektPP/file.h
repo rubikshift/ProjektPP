@@ -3,7 +3,6 @@
 #include "point.h"
 #include "cursor.h"
 #include "shape.h"
-#include "projektPP.h"
 #include "extensions.h"
 
 class file

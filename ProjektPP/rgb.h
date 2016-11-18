@@ -1,5 +1,4 @@
 #pragma once
-#include "projektPP.h"
 
 struct rgb
 {
