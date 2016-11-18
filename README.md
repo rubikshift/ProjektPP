@@ -1,6 +1,6 @@
 # Tekstowy Edytor Obrazków - Projekt 1, Podstawy Programowania 16/17
 
-Autor: Michał Krakowiak <br/>
+<b>Autor: Michał Krakowiak</b> <br/>
 Nr indeksu: 165596
 
 Własny format pliku: *.mff <i>(my file format)</i>
