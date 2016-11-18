@@ -1,18 +1,20 @@
 # Tekstowy Edytor Obrazków - Projekt 1, Podstawy Programowania 16/17
 
-Autor: Michał Krakowiak
+Autor: Michał Krakowiak <br/>
 Nr indeksu: 165596
 
-Własny format pliku: *.mff (my file format)
+Własny format pliku: *.mff <i>(my file format)</i>
 
-Zaiplementowane funkcje:
-  -zapis/odczyt we własnym formacie,
-  -zapis/odczyt plików w formacie BMP,
-  -zapis/odczyt plików w formacie XPM2,
-  -otwieranie podanych plików z linii poleceń,
-  -tryb interaktywny,
-  -rysowanie linii,
-  -rysowanie prostokątów,
-  -obsługa edycji w trybie 16 kolorów,
-  -"cofnij"
-  -obsługa wielu plików
+<b>Zaiplementowane funkcje:</b>
+<ul>
+<li>zapis/odczyt we własnym formacie</li>
+  <li>zapis/odczyt plików w formacie BMP</li>
+  <li>zapis/odczyt plików w formacie XPM2</li>
+  <li>otwieranie podanych plików z linii poleceń</li>
+  <li>tryb interaktywny</li>
+  <li>rysowanie linii</li>
+  <li>rysowanie prostokątów</li>
+  <li>obsługa edycji w trybie 16 kolorów</li>
+  <li>"cofnij"</li>
+  <li>obsługa wielu plików</li>
+ </ul>
