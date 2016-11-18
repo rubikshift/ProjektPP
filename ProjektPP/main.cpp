@@ -39,6 +39,8 @@ int changeColor(const int* input, const int* acctualColor)
 		case 'y':
 		case 'Y': return WHITE;
 		case ' ':
+			if (*acctualColor == BLACK) return WHITE;
+			else return BLACK; break;
 		default: return *acctualColor;
 	}
 }
@@ -62,8 +64,25 @@ void drawUI(const int* zn, const int* zero, int fileCounter, int actualId, file*
 		textcolor(LIGHTGRAY);
 		if (actualFile != NULL)
 		{
-			if ((i == undo && !actualFile->isUndoEnable()) || (i == prevFile && actualId == 0) || (i == nextFile && actualId == fileCounter-1))
+			if (i == fileInfo)
+			{
+				gotoxy(UI_X_POSITION + strlen(UI[i]), i + 1);
+				cputs(actualFile->getFileName());
+			}
+			else if ((i == undo && !actualFile->isUndoEnable()) || (i == prevFile && actualId == 0) || (i == nextFile && actualId == fileCounter-1))
 				textcolor(DARKGRAY);
+			else if (i == xPosition)
+			{
+				gotoxy(UI_X_POSITION + strlen(UI[i]), i + 1);
+				itoa(actualFile->localCursor->position.x - MIN_X_POSITION, buff, 10);
+				cputs(buff);
+			}
+			else if (i == yPosition)
+			{
+				gotoxy(UI_X_POSITION + strlen(UI[i]), i + 1);
+				itoa(actualFile->localCursor->position.y - MIN_Y_POSITION, buff, 10);
+				cputs(buff);
+			}
 			else if (i == actualMode)
 				switch (actualFile->getDrawingMode())
 				{
@@ -90,7 +109,7 @@ void drawUI(const int* zn, const int* zero, int fileCounter, int actualId, file*
 		itoa(*zn, txt + 16, 16);
 	}
 	textcolor(LIGHTGRAY);
-	gotoxy(UI_X_POSITION, MODE_INFO + 2);
+	gotoxy(UI_X_POSITION, 17);
 	cputs(txt);
 #endif // DEBUG
 }

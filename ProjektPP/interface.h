@@ -7,9 +7,12 @@
 
 enum specificInterfaceElements
 {
+	fileInfo = 0,
 	undo = 10,
 	prevFile = 11,
 	nextFile = 12,
+	xPosition = 13,
+	yPosition = 14,
 	actualMode = 15,
 	question = 19,
 	inputFileNamePosition = 20,
