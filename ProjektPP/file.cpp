@@ -220,11 +220,12 @@ void file::saveFile(const char* fileName)
 	case xpm2: this->saveXpmFile(fileName); break;
 	case mff: this->saveMffFile(fileName); break;
 	case undefined:
-		char* newFileName = new char[strlen(fileName) + strlen(".mff") + 1]; break;
+		char* newFileName = new char[strlen(fileName) + strlen(".mff") + 1]; 
 		memcpy(newFileName, fileName, strlen(fileName));
-		strcat(newFileName, ".mff");
+		memcpy(newFileName + strlen(fileName), ".mff", strlen(".mff"));
+		newFileName[strlen(fileName) + strlen(".mff")] = '\0';
 		this->saveFile(newFileName);
-		delete[] newFileName;
+		delete[] newFileName; break;
 	}
 }
 
