@@ -5,6 +5,7 @@
 #include "file.h"
 #include "interface.h"
 #include "BasicFileOperations.h"
+//#define DEBUG
 
 const char* UI[] = {"Nazwa pliku: ", "esc = wyjscie, anulowanie rysowania", "strzalki = poruszanie",
 	"l = rysowanie linii", "k = rysowanie prostokata", "0123456789qwerty = wybor koloru", "s = zapisywanie pliku",

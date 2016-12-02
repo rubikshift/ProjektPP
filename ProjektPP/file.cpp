@@ -155,8 +155,6 @@ void file::loadXpmFile(const char* fileName)
 						this->img[y][x] = colors[i].color;
 
 		delete[] colors;
-		/*for (int i = 0; i < this->height; i++)
-		delete[] data[i];*/
 		delete[] data;
 	}
 }

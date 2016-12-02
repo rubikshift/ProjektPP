@@ -158,6 +158,7 @@
   <ItemGroup>
     <ClInclude Include="BasicFileOperations.h" />
     <ClInclude Include="bmp.h" />
+    <ClInclude Include="clipboard.h" />
     <ClInclude Include="conio2.h" />
     <ClInclude Include="extensions.h" />
     <ClInclude Include="file.h" />
