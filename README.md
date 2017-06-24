@@ -2,7 +2,7 @@
 
 Project made for course "Basics of Programming"
 
-<b>Contains library <i>conio2</i> created by K.M.Ocetkiewicz. Library can be used only in projects four course "Basics of Programming"</b>
+<b>Contains library <i>conio2</i> created by K.M.Ocetkiewicz. Library can be used only in projects for course "Basics of Programming"</b>
 
 Own file format: *.mff <i>(my file format)</i>
 
