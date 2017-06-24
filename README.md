@@ -1,19 +1,21 @@
-# Tekstowy Edytor Obrazków - Projekt 1, Podstawy Programowania 16/17
+# Text based image editor
 
-<b>Autor: Michał Krakowiak</b> <br/>
+Project made for course "Basics of Programming"
 
-Własny format pliku: *.mff <i>(my file format)</i>
+<b>Contains library <i>conio2</i> created by K.M.Ocetkiewicz. Library can be used only in projects four course "Basics of Programming"</b>
 
-<b>Zaiplementowane funkcje:</b>
+Own file format: *.mff <i>(my file format)</i>
+
+<b>Features</b>
 <ul>
-<li>zapis/odczyt we własnym formacie</li>
-  <li>zapis/odczyt plików w formacie BMP</li>
-  <li>zapis/odczyt plików w formacie XPM2</li>
-  <li>otwieranie podanych plików z linii poleceń</li>
-  <li>tryb interaktywny</li>
-  <li>rysowanie linii</li>
-  <li>rysowanie prostokątów</li>
-  <li>obsługa edycji w trybie 16 kolorów</li>
-  <li>"cofnij"</li>
-  <li>obsługa wielu plików</li>
+<li>load/save *.mff files</li>
+  <li>load/save *.bmp files</li>
+  <li>load/save *.xpm (XMP2) files</li>
+  <li>opening files in command line</li>
+  <li>interacitve mode</li>
+  <li>drawing lines</li>
+  <li>drawing rectangles</li>
+  <li>16 colors</li>
+  <li>"undo"</li>
+  <li>multiple files</li>
  </ul>
